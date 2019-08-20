@@ -23,8 +23,8 @@
     }
     var targetExtensionId = "aefadfjfjpdajgbkhapgdnnemjebecen";
     // RequestSign 请求签名
-    chrome.runtime.sendMessage({
-        targetExtensionId,
+    chrome.runtime.sendMessage(
+      targetExtensionId, {
         type: 'RequestSign',
         data: json
       },
