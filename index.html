@@ -30,7 +30,7 @@
       },
       function (response) {
         console.log(response)
-        show.innerText(response.msg)
+        show.innerText = response.msg
         btn.disabled = false
       })
     // chrome.runtime.sendMessage(targetExtensionId, {
