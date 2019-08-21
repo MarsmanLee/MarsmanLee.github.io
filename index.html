@@ -9,38 +9,38 @@
 </head>
 
 <body>
-  <button id="button">点击</button>
+  <button id="signature-button">点击</button>
   <p id="show"></p>
 </body>
 <script>
-  var btn = document.querySelector('#button');
-  var show = document.querySelector('#show');
-  btn.onclick = function () {
-    console.log('我被点击了');
-    btn.disabled = true
-    var json = {
-      name: '123123'
-    }
-    var targetExtensionId = "aefadfjfjpdajgbkhapgdnnemjebecen";
-    // RequestSign 请求签名
-    chrome.runtime.sendMessage(
-      targetExtensionId, {
-        type: 'RequestSign',
-        data: json
-      },
-      function (response) {
-        console.log(response)
-        show.innerText = response.msg
-        btn.disabled = false
-      })
-    // chrome.runtime.sendMessage(targetExtensionId, {
-    //   type: 'MsgFromPage',
-    //   msg: 'Hello, I am page~'
-    // }, function (response) {
-    //   console.log(response)
-    // })
+  // var btn = document.querySelector('#button');
+  // var show = document.querySelector('#show');
+  // btn.onclick = function () {
+  //   console.log('我被点击了');
+  //   btn.disabled = true
+  //   var json = {
+  //     name: '123123'
+  //   }
+  //   var targetExtensionId = "aefadfjfjpdajgbkhapgdnnemjebecen";
+  //   // RequestSign 请求签名
+  //   chrome.runtime.sendMessage(
+  //     targetExtensionId, {
+  //       type: 'RequestSign',
+  //       data: json
+  //     },
+  //     function (response) {
+  //       console.log(response)
+  //       show.innerText = response.msg
+  //       btn.disabled = false
+  //     })
+  //   // chrome.runtime.sendMessage(targetExtensionId, {
+  //   //   type: 'MsgFromPage',
+  //   //   msg: 'Hello, I am page~'
+  //   // }, function (response) {
+  //   //   console.log(response)
+  //   // })
 
-  }
+  // }
 </script>
 
 </html>
