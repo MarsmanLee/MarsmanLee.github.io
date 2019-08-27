@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>测试插件通信</title>
+  <script src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
 </head>
 
 <body>
@@ -18,7 +19,18 @@
   // var show = document.querySelector('#show');
   btn.onclick = function () {
     console.log('我被点击了')
-    ajax({
+    // ajax({
+    //   url: "http://47.102.115.64:8080/web/sys/pblin.do",
+    //   type: "post",
+    //   data: {
+    //     user_name: 'admin',
+    //     password: 'e10adc3949ba59abbe56e057f20f883e'
+    //   },
+    //   success: function (data) {
+    //     console.log(data);
+    //   }
+    // });
+    $.ajax({
       url: "http://47.102.115.64:8080/web/sys/pblin.do",
       type: "post",
       data: {
@@ -26,78 +38,11 @@
         password: 'e10adc3949ba59abbe56e057f20f883e'
       },
       success: function (data) {
+        // 一般后台都会提供接口文档，可以知道数据的名字，也可以直接打印数据在控制台中查看
         console.log(data);
-      }
-    });
-  }
 
-  function ajax(options) {
-    // 默认值处理
-    // 设置默认的请求方式为type
-    options.type = options.type || "get";
-    // 设置默认的请求地址为当前地址栏地址
-    options.url = options.url || location.href;
-    // 设置默认的请求同步或者异步
-    options.async = options.async || "true";
-    // 设置请求参数data的默认值
-    options.data = options.data || {};
-    // 处理用户传进来的请求参数（data）对象
-    var dataArr = [];
-    for (var k in options.data) {
-      dataArr.push(k + "=" + options.data[k]);
-    }
-    var dataStr = dataArr.join("&");
-
-    // 异步请求对象兼容性处理
-    var xhr;
-    if (window.XMLHttpRequest) {
-      xhr = new XMLHttpRequest();
-    } else {
-      // IE6及其以下版本   
-      xhr = new ActiveXObjcet('Microsoft.XMLHTTP');
-    };
-
-    // 判断当前的请求方式，如果是get，将数据拼接在地址后面
-    xhr.open(options.type, options.type == "get" ? options.url + "?" + dataStr : options.url, options.async);
-    // 当是post请求的时候，需要设置请求头
-    if (options.type == "post") {
-      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    }
-    // 发送数据，当是post方式的时候，发送数据
-    xhr.send(options.type == "get" ? null : dataStr);
-    if (options.async) {
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-          // 判断请求的数据是什么类型的
-          var type = xhr.getResponseHeader("Content-Type");
-          var result;
-          if (type.indexOf("json") != -1) {
-            // 如果是json格式的数据，就将其转换成js对象
-            result = JSON.parse(xhr.responseText);
-          } else if (type.indexOf("xml") != -1) {
-            // 如果是xml格式的数据，直接返回responseXML
-            result = xhr.responseXML;
-          } else {
-            // 如果两种格式都不是，直接返回responseText
-            result = xhr.responseText;
-          }
-          // 将处理好的数据进行传递
-          options.success(result);
-        }
       }
-    } else {
-      // 如果是同步的话就不需要在监测状态改变的情况了
-      var type = xhr.getResponseHeader("Content-Type");
-      var result;
-      if (type.indexOf("json") != -1) {
-        result = JSON.parse(xhr.responseText);
-      } else if (type.indexOf("xml") != -1) {
-        result = xhr.responseXML;
-      } else {
-        result = xhr.responseText;
-      }
-      options.success(result);
-    }
+    })
   }
 </script>
 
