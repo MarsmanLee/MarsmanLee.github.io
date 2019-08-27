@@ -10,37 +10,95 @@
 
 <body>
   <button id="signature-button">点击</button>
+  <input id="signature-input" type="text" style="display: none">
   <p id="show"></p>
 </body>
 <script>
-  // var btn = document.querySelector('#button');
+  var btn = document.querySelector('#signature-button');
   // var show = document.querySelector('#show');
-  // btn.onclick = function () {
-  //   console.log('我被点击了');
-  //   btn.disabled = true
-  //   var json = {
-  //     name: '123123'
-  //   }
-  //   var targetExtensionId = "aefadfjfjpdajgbkhapgdnnemjebecen";
-  //   // RequestSign 请求签名
-  //   chrome.runtime.sendMessage(
-  //     targetExtensionId, {
-  //       type: 'RequestSign',
-  //       data: json
-  //     },
-  //     function (response) {
-  //       console.log(response)
-  //       show.innerText = response.msg
-  //       btn.disabled = false
-  //     })
-  //   // chrome.runtime.sendMessage(targetExtensionId, {
-  //   //   type: 'MsgFromPage',
-  //   //   msg: 'Hello, I am page~'
-  //   // }, function (response) {
-  //   //   console.log(response)
-  //   // })
+  btn.onclick = function () {
+    console.log('我被点击了')
+    ajax({
+      url: "http://47.102.115.64:8080/web/sys/pblin.do",
+      type: "post",
+      data: {
+        user_name: 'admin',
+        password: 'e10adc3949ba59abbe56e057f20f883e'
+      },
+      success: function (data) {
+        console.log(data);
+      }
+    });
+  }
 
-  // }
+  function ajax(options) {
+    // 默认值处理
+    // 设置默认的请求方式为type
+    options.type = options.type || "get";
+    // 设置默认的请求地址为当前地址栏地址
+    options.url = options.url || location.href;
+    // 设置默认的请求同步或者异步
+    options.async = options.async || "true";
+    // 设置请求参数data的默认值
+    options.data = options.data || {};
+    // 处理用户传进来的请求参数（data）对象
+    var dataArr = [];
+    for (var k in options.data) {
+      dataArr.push(k + "=" + options.data[k]);
+    }
+    var dataStr = dataArr.join("&");
+
+    // 异步请求对象兼容性处理
+    var xhr;
+    if (window.XMLHttpRequest) {
+      xhr = new XMLHttpRequest();
+    } else {
+      // IE6及其以下版本   
+      xhr = new ActiveXObjcet('Microsoft.XMLHTTP');
+    };
+
+    // 判断当前的请求方式，如果是get，将数据拼接在地址后面
+    xhr.open(options.type, options.type == "get" ? options.url + "?" + dataStr : options.url, options.async);
+    // 当是post请求的时候，需要设置请求头
+    if (options.type == "post") {
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    }
+    // 发送数据，当是post方式的时候，发送数据
+    xhr.send(options.type == "get" ? null : dataStr);
+    if (options.async) {
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          // 判断请求的数据是什么类型的
+          var type = xhr.getResponseHeader("Content-Type");
+          var result;
+          if (type.indexOf("json") != -1) {
+            // 如果是json格式的数据，就将其转换成js对象
+            result = JSON.parse(xhr.responseText);
+          } else if (type.indexOf("xml") != -1) {
+            // 如果是xml格式的数据，直接返回responseXML
+            result = xhr.responseXML;
+          } else {
+            // 如果两种格式都不是，直接返回responseText
+            result = xhr.responseText;
+          }
+          // 将处理好的数据进行传递
+          options.success(result);
+        }
+      }
+    } else {
+      // 如果是同步的话就不需要在监测状态改变的情况了
+      var type = xhr.getResponseHeader("Content-Type");
+      var result;
+      if (type.indexOf("json") != -1) {
+        result = JSON.parse(xhr.responseText);
+      } else if (type.indexOf("xml") != -1) {
+        result = xhr.responseXML;
+      } else {
+        result = xhr.responseText;
+      }
+      options.success(result);
+    }
+  }
 </script>
 
 </html>
